@@ -12,7 +12,6 @@ date: ""
 output: 
   beamer_presentation: 
     colortheme: nuim
-    fonttheme: structurebold
     highlight: tango
     theme: Madrid
     includes:
