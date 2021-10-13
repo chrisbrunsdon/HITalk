@@ -1,0 +1,68 @@
+% Copyright 2004 by Madhusudan Singh <madhusudan.singh@gmail.com>
+%
+% This file may be distributed and/or modified
+%
+% 1. under the LaTeX Project Public License and/or
+% 2. under the GNU Public License.
+%
+% See the file doc/licenses/LICENSE for more details.
+\mode<presentation>
+
+\definecolor{darkred}{rgb}{0.8,0,0}
+\definecolor{MUBlue}{RGB}{0,55,113}
+\definecolor{MUYellow}{RGB}{240,171,0}
+\definecolor{MUCyan}{RGB}{0,103,120}
+\definecolor{MURed}{RGB}{130,35,39}
+
+
+\setbeamercolor*{sidebar}{fg=darkred,bg=gray!15!white}
+
+%\setbeamercolor*{palette primary}{fg=darkred!10!black}
+%\setbeamercolor*{palette secondary}{fg=white}
+%\setbeamercolor*{palette tertiary}{fg=darkred!50!black}
+%\setbeamercolor*{palette quaternary}{fg=gray!10!white}
+
+\setbeamercolor*{palette sidebar primary}{fg=darkred!10!black}
+\setbeamercolor*{palette sidebar secondary}{fg=white}
+\setbeamercolor*{palette sidebar tertiary}{fg=darkred!50!black}
+\setbeamercolor*{palette sidebar quaternary}{fg=gray!10!white}
+
+%\setbeamercolor*{titlelike}{parent=palette primary}
+%\setbeamercolor{titlelike}{fg=MURed}
+\setbeamercolor{frametitle}{bg=MURed}
+\setbeamercolor{title}{bg=MUBlue}
+\setbeamercolor{author}{fg=MURed}
+%\setbeamercolor{background canvas}{bg=MUYellow!5!white}
+\setbeamercolor{frametitle right}{bg=gray!60!white}
+\setbeamercolor{normal text}{fg=MUBlue,bg=white}
+\setbeamercolor{block title}{bg=MURed,fg=white}
+\setbeamercolor{title in head/foot}{bg=MUCyan}
+\setbeamercolor{author in head/foot}{bg=MUYellow,fg=black}
+\setbeamercolor{date in head/foot}{bg=MUBlue}
+
+\setbeamercolor*{separation line}{}
+\setbeamercolor*{fine separation line}{}
+\setbeamercolor{itemize item}{fg=MURed}
+\setbeamercolor{itemize subitem}{fg=MUCyan}
+\setbeamertemplate{itemize item}{\raisebox{-3pt}{\huge\textbullet}}
+\setbeamertemplate{itemize subitem}{\raisebox{-2pt}{\Large\textbullet}}
+\setbeamerfont{title}{size = \huge}
+%\setbeamertemplate{itemize items}{\color{MUBlue}{$\Rightarrow$}}
+\setbeamertemplate{footline}
+{
+  \leavevmode%
+  \hbox{%
+    \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%
+      \usebeamerfont{author in head/foot}\insertshortauthor
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+      \usebeamerfont{title in head/foot}\insertshorttitle
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{date in head/foot}%
+      \usebeamerfont{date in head/foot} Slide \insertframenumber  \ of  \inserttotalframenumber
+    \end{beamercolorbox}
+  }%
+  \vskip0pt%
+}
+\mode
+<all>
