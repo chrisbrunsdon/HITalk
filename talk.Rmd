@@ -23,7 +23,65 @@ classoption: "aspectratio=149"
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = FALSE,message=FALSE,warning=FALSE)
+library(tidyverse)
+library(deSolve)
+library(scales)
+library(lubridate)
+library(sf)
+library(csodata)
+```
+```{r, results='hide',cache=TRUE}
+
+popns <- read_csv('popns.csv')
+
+cty <- st_read('county.json',crs=29902) %>% left_join(popns) 
+
+Ws <- st_touches(cty,cty,sparse = FALSE) + 0
+diag(Ws) <- rowSums(Ws)*2
+Ws<- sweep(Ws,2,colSums(Ws),'/')
+
+seed_cases <- rep(0,26)
+seed_cases[6] <- 100
+parameters <- c(beta=0.36, gamma=1/6, N=cty$Popn, W=Ws)
+init  <- c(S=cty$Popn - seed_cases, I=seed_cases, R=rep(0,26))
+times <- seq(0, 200, by = 1)
+
+MODEL <- function(time, state, parameters) {
+  with(as.list(c(state, parameters)), {
+    
+    # Unravel the values in vector form 
+    
+    S <- matrix(state[01:26], nrow = 26, ncol=1)
+    I <- matrix(state[27:52], nrow = 26, ncol=1)
+    R <- matrix(state[53:78], nrow = 26, ncol=1)
+    
+    N <- matrix(parameters[  03:28 ], nrow=26, ncol=1)
+    W <- matrix(parameters[-(01:28)], nrow=26, ncol=26)
+    
+    # Specify the model
+    
+    dS <- -(S * beta) * (W %*% I)/N
+    dI <-  (S * beta) * (W %*% I)/N - gamma * I
+    dR <-  gamma * I
+    
+    return(list(c(dS, dI, dR)))
+  })
+}
+
+out <- ode(y=init, times=times, func=MODEL, parms=parameters)
+res <- data.frame(out[,c(1,28:53)]) 
+colnames(res) <- c("SimDay",cty$COUNTY)
+res <- res %>% 
+  as_tibble() %>% 
+  pivot_longer(CARLOW:WICKLOW,names_to="COUNTY",values_to = "I") %>%
+  mutate(Date = ymd('2020-02-29') + SimDay)
+
+dates <- seq(ymd('2020-04-09'),ymd('2020-5-14'),by='week')
+early <- res %>% 
+  filter(Date %in% dates)
+early <- cty %>% left_join(early)
+
 ```
 
 ## Geocomputation?
@@ -48,6 +106,34 @@ knitr::opts_chunk$set(echo = FALSE)
 ::::{.col data-latex="{0.48\linewidth}"}
 ```{r, echo=FALSE, out.width='100%',fig.align='center'}
 knitr::include_graphics('movemap.png')
+```
+::::
+:::::
+
+## What areas of application are there?
+
+:::::{.cols data-latex=""}
+::::{.col data-latex="{0.48\linewidth}"}
+
+\Large
+
+  - Several:
+    - \Large Epidemiology
+    - Crime Pattern Analysis
+    - Transport
+    - Climate Data Analysis
+    - House Price Analysis
+    - Lots more ...
+::::
+
+
+::::{.col data-latex="{0.04\linewidth}"}
+\ 
+::::
+
+::::{.col data-latex="{0.48\linewidth}"}
+```{r, cache=TRUE}
+ggplot(early,aes(fill=I)) + geom_sf() + facet_wrap(~Date) + scale_fill_viridis_c(trans='log10',name='Covid19\nCases') 
 ```
 ::::
 :::::
@@ -97,15 +183,29 @@ knitr::include_graphics('churchpol.jpg')
 ::::
 :::::
 
-## Slide with R Output
+## So what else is there? 
 
-```{r cars, echo = TRUE}
-summary(cars)
+
+:::: {.cols data-latex=""}
+
+:::{.col data-latex="{0.38\linewidth}"}
+
+  - Analytics of geographical data
+    - Typology of places in Australia
+    - By weekly cycles of crime
+    
+
+\tiny Corcoran J, Zahnow R, Kimpton A, Wickes R, Brunsdon C. The temporality of place: Constructing a temporal typology of crime in commercial precincts. doi:10.1177/2399808319846904
+:::
+
+:::{.col data-latex="{0.02\linewidth}"}
+\ 
+:::
+
+:::{.col data-latex="{0.6\linewidth}"}
+
+```{r, out.width='100%'}
+knitr::include_graphics('crimeclus2.pdf')
 ```
-
-## Slide with Plot
-
-```{r pressure}
-plot(pressure)
-```
-
+:::
+::::
